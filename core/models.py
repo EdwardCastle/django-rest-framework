@@ -1,3 +1,5 @@
+""" Defined all your models here """
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
@@ -5,7 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
-        """ Create and save a new user"""
+        """ Create and save a new user """
 
         if not email:
             raise ValueError('Users must have an email')

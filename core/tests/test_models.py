@@ -1,3 +1,5 @@
+""" Define all your models test here """
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
