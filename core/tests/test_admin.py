@@ -33,3 +33,10 @@ class AdminSites(TestCase):
         url = reverse('admin:core_user_change', args=[self.user.id])  # admin/core/user/1
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_create_user_page(self):
+        """ Test create User page """
+
+        url = reverse('admin:core_user_add')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
