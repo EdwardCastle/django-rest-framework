@@ -1,7 +1,14 @@
-""" Define all your models test here """
+""" Define all your models test here  """
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+from core import models
+
+
+def sample_user(email='edward@castle.com', password='test123'):
+    """ Create a sample user """
+    return get_user_model().objects.create_user(email=email, password=password)
 
 
 class ModelTest(TestCase):
@@ -45,4 +52,12 @@ class ModelTest(TestCase):
         self.assertTrue(user.is_staff)
         self.assertTrue(user.is_superuser)
 
+    def test_tag_str(self):
+        """ Test String representation of Tag """
 
+        tag = models.Tag.objects.create(
+            user=sample_user(),
+            name='edward'
+        )
+
+        self.assertEqual(str(tag), tag.name)
