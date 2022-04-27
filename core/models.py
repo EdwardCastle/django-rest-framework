@@ -48,14 +48,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Tag(models.Model):
     """ Tag model for the recipe """
-
     name = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'Recipe'
-        verbose_name = 'recipe'
-        verbose_name_plural = 'recipes'
+        db_table = 'Tag'
+        verbose_name = 'tag'
+        verbose_name_plural = 'Tags'
 
     def __str__(self):
         return self.name
@@ -63,7 +62,6 @@ class Tag(models.Model):
 
 class Ingredient(models.Model):
     """ Ingredient to use in the recipe """
-
     name = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
@@ -74,3 +72,17 @@ class Ingredient(models.Model):
         db_table = 'Ingredient'
         verbose_name = 'ingredient'
         verbose_name_plural = 'ingredients'
+
+
+class Recipe(models.Model):
+    """ Recipe object """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    time_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    link = models.CharField(max_length=255, blank=True)
+    ingredient = models.ManyToManyField('Ingredient')
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self):
+        return self.title
