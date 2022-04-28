@@ -42,7 +42,6 @@ class PrivateTagsTest(TestCase):
         Tag.objects.create(user=self.user, name='Rice')
 
         request = self.client.get(TAGS_URL)
-        print(request.data)
         tags = Tag.objects.all().order_by('-name')
         serializer = TagSerializer(tags, many=True)
         self.assertEqual(request.status_code, status.HTTP_200_OK)
@@ -59,7 +58,6 @@ class PrivateTagsTest(TestCase):
         Tag.objects.create(user=user2, name='Mango')
         tag = Tag.objects.create(user=self.user, name='Some Food')
         request = self.client.get(TAGS_URL)
-        print(request.data)
         self.assertEqual(request.status_code, status.HTTP_200_OK)
         self.assertEqual(len(request.data), 1)
         self.assertEqual(request.data[0]['name'], tag.name)
