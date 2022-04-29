@@ -95,5 +95,10 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')
 
+    class Meta:
+        db_table = 'Recipe'
+        verbose_name = 'recipe'
+        verbose_name_plural = 'recipes'
+
     def __str__(self):
         return self.title
