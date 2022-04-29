@@ -17,7 +17,7 @@ class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateMo
 
     def get_queryset(self):
         """ Return Tags objects for the authenticated user """
-        return self.queryset.filter(user=self.request.user).order_by('-name')
+        return self.queryset.filter(user=self.request.user).order_by('name')
 
     def perform_create(self, serializer):
         """ Create new Tag """
@@ -34,7 +34,7 @@ class IngredientViewset(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.C
 
     def get_queryset(self):
         """ Return Ingredients objects for the authenticated user """
-        return self.queryset.filter(user=self.request.user).order_by('-name')
+        return self.queryset.filter(user=self.request.user).order_by('name')
 
     def perform_create(self, serializer):
         """ Create new Ingredient """
@@ -84,8 +84,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_200_OK
             )
         else:
-            print('a')
-
             return Response(
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST

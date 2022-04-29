@@ -143,8 +143,6 @@ class PrivateRecipeApiTest(TestCase):
         self.assertEqual(request.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=request.data['id'])
         tags = recipe.tags.all()
-        print('******')
-        print(tags)
         self.assertEqual(tags.count(), 2)
         self.assertIn(tag1, tags)
         self.assertIn(tag2, tags)
@@ -189,20 +187,18 @@ class RecipeImageUploadTests(TestCase):
     def test_upload_image_to_recipe(self):
         """ Test to upload the image """
 
-        # im getting error in this test, feel free to fix it :)
         url = image_upload_url(self.recipe.id)
-        print('fffffffff')
-        print(url)
-        print(self.recipe.title)
-        print('fffffffff')
-
         with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
             image = Image.new('RGB', (10, 10))
             image.save(ntf, format='JPEG')
             ntf.seek(0)
-            print(ntf)
-            request = self.client.post(url, {'image': ntf}, format='multipart')
-        print(request.data)
+            payload = {
+                'title': 'Test recipe 2 ingredients',
+                'image': ntf,
+                'time_minutes': 10,
+                'price': 5.00
+            }
+            request = self.client.post(url, payload, format='multipart')
         self.recipe.refresh_from_db()
         self.assertEqual(request.status_code, status.HTTP_200_OK)
         self.assertIn('image', request.data)
