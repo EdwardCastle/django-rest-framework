@@ -8,6 +8,31 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 
+class BaseRecipeAttrViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
+    """ Viewsets base """
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        """ Return objects for the authenticated user """
+        assigned_only = bool(
+            int(self.request.query_params.get('assigned_only', 0))
+        )
+        queryset = self.queryset
+        if assigned_only:
+            queryset = queryset.filter(recipe__isnull=False)
+
+            return queryset.filter(
+                user=self.request.user
+             ).order_by('-name').distinct()
+
+        return self.queryset.filter(user=self.request.user).order_by('name')
+
+    def perform_create(self, serializer):
+        """ Create new Tag """
+        serializer.save(user=self.request.user)
+
+
 class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
     """ Tag handler in the database """
     authentication_classes = (TokenAuthentication,)
@@ -88,3 +113,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+    @staticmethod
+    def _params_to_ints(qs):
+        """ Convert string list ids to ints list integers """
+        return [int(str_id) for str_id in qs.split(',')]
+
+    def get_queryset(self):
+        tags = self.request.query_params.get('tags')
+        ingredients = self.request.query_params.get('ingredients')
+        queryset = self.queryset
+        if tags:
+            tags_ids = self._params_to_ints(tags)
+            queryset = queryset.filter(tags__id__in=tags_ids)
+        if ingredients:
+            ingredients_ids = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredients_ids)
+
+        return queryset.filter(user=self.request.user)
